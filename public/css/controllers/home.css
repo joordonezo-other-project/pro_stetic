@@ -1,0 +1,24 @@
+.madu-bold {
+    color: #ec037c !important;
+    font-weight: 700;
+}
+
+.nav-link{
+    color: #ec037c !important;
+}
+
+.btn-primary {
+    background-color: #ec037c !important;
+    border-color: #ec037c !important;
+}
+
+.btn-outline-primary {
+    color: #ec037c !important;
+    border-color: #ec037c !important;
+}
+
+.btn-outline-primary:hover {
+    color: #fff !important;
+    background-color: #ec037c !important;
+    border-color: #ec037c !important;
+}
