@@ -1,33 +1,19 @@
 <!-- Modal -->
-<div class="modal fade" id="modalCitationsDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="modalAddCitation" tabindex="-1" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Detalle de Cita</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Cita</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="modalCitationsDetailsContent" class="row mb-3 ">
-                    <div class="input-group justify-content-center">
-                        <div class="input-group justify-content-center mb-2" id="detailsService">
-                            <!--to-do from javaScript controller-->
+               <div class="row mb-3">
+                    <label for="cantidad" class="col-md-4 col-form-label text-md-end">{{ __('Nombre') }}</label>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input id="inputNewName" type="text" class="form-control" required autofocus>
                         </div>
-                        <table class="table" id="modalCitationsDetailsTable">
-                            <caption>Tabla Detalle de Cita</caption>
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col">Duración</th>
-                                    <th scope="col">Costo</th>
-                                    <th scope="col">Descripción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!--to-do from javaScript controller-->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
