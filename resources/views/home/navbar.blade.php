@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-            type="button" role="tab" aria-controls="pills-home" aria-selected="true">Inicio</button>
+            type="button" role="tab" aria-controls="pills-home" aria-selected="true"><i class="bi bi-house"></i> Inicio</button>
     </li>
     @if (Auth::user()->idRole == 1 || Auth::user()->idRole == 1)
         <li class="nav-item" role="presentation">

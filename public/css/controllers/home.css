@@ -3,7 +3,7 @@
     font-weight: 700;
 }
 
-.nav-link{
+.nav-link {
     color: #ec037c !important;
 }
 
@@ -21,4 +21,8 @@
     color: #fff !important;
     background-color: #ec037c !important;
     border-color: #ec037c !important;
+}
+.size-of-calendar {
+    width: 150px;
+    height: 150px;
 }

@@ -108,3 +108,51 @@ const showCitationDetails = (id) => {
             }
         });
 }
+
+function getCalendarStart(dayOfWeek, currentDate) {
+    var date = currentDate - 1;
+    var startOffset = (date % 7) - dayOfWeek;
+    if (startOffset > 0) {
+        startOffset -= 7;
+    }
+    return Math.abs(startOffset);
+}
+
+const updateCalendar = async () => {
+
+    let currentDate = new Date();
+    let firstDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    let neutralDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    let day = firstDate.getUTCDay();
+    let date = firstDate.getUTCDate();
+    let dayOfWeek = getCalendarStart(day, date);
+    let tableCalendar = document.querySelector('#calendarTable tbody');
+    tableCalendar.innerHTML = '';
+    let currenDay = 0;
+    //let currentProduction = await getProductionByMonth(currentDate.getFullYear(), (currentDate.getMonth() + 1));
+
+    for (i = 0; i < 6; i++) {
+        let tr = document.createElement('tr');
+        for (j = 0; j < 7; j++) {
+            let td = document.createElement('td');
+            if ((i == 0 && j > dayOfWeek - 1) || (i > 0 && neutralDate.getDate() > currenDay)) {
+                currenDay++;
+                let dateByDay = getDateFormat(currentDate.getFullYear(), currentDate.getMonth(), currenDay);
+                //let prodTotal = currentProduction.find(item => item.dateOfProduction == dateByDay);
+                td.innerHTML = `
+                <div class="container ">
+                <div class="row justify-content-center">
+                <span class="fw-bold text-center ${currenDay == currentDate.getDate() ? 'badge bg-secondary':''}">${dateByDay} ${currenDay == currentDate.getDate() ? 'Hoy':''}</span>
+                <canvas data-bs-toggle="modal" data-bs-target="#modalAddCitation" class="btn btn-outline-primary mb-2 size-of-calendar">
+
+                </canvas>
+                </div>
+                </div>
+            `;
+            }
+            tr.appendChild(td);
+        }
+        tableCalendar.appendChild(tr);
+    }
+
+}
