@@ -28,3 +28,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::post('/getAllCitations', 'App\Http\Controllers\Business\CitationController@getAllCitations')->name('getAllCitations');
 Route::post('/getCitationDetails', 'App\Http\Controllers\Business\CitationController@getCitationDetails')->name('getCitationDetails');
+Route::post('/getScheduleByRangeDates', 'App\Http\Controllers\Business\CitationController@getScheduleByRangeDates')->name('getScheduleByRangeDates');
+Route::post('/searchPeopleByName', 'App\Http\Controllers\Business\CitationController@searchPeopleByName')->name('searchPeopleByName');
+Route::post('/getServicesAvailables', 'App\Http\Controllers\Business\CitationController@getServicesAvailables')->name('getServicesAvailables');
+Route::post('/saveCitation', 'App\Http\Controllers\Business\CitationController@saveCitation')->name('saveCitation');

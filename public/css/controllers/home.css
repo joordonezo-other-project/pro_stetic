@@ -23,6 +23,20 @@
     border-color: #ec037c !important;
 }
 .size-of-calendar {
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    /*height: 150px;*/
+}
+
+#dayTable tbody > tr {
+    height: 0px !important;
+    font-size: 0.3rem;
+    padding: 0.5%;
+}
+#dayTable tbody > tr>td {
+    padding: 0.5%;
+}
+
+.none-click{
+    pointer-events: none;
+    opacity: 0.5;
 }
