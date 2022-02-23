@@ -26,6 +26,7 @@
                     <th scope="col">Descripción</th>
                     <th scope="col">Asignado a</th>
                     <th scope="col">Cliente</th>
+                    <th scope="col">Fecha Cita</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Acciones</th>
                 </tr>

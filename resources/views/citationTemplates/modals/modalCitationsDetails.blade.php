@@ -22,6 +22,7 @@
                                     <th scope="col">Duración</th>
                                     <th scope="col">Costo</th>
                                     <th scope="col">Descripción</th>
+                                    <th scope="col">Observaciones</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -1,4 +1,8 @@
 
+window.citationControllerVar = {};
+const { citationControllerVar } = window;
+
+citationControllerVar.currentMonth = new Date().getMonth();
 const getAllCitations = () => {
     fetch('./getAllCitations', {
         method: 'POST',
@@ -9,26 +13,17 @@ const getAllCitations = () => {
             'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        /*body: JSON.stringify({
-            nameClientOrder: document.getElementById('nameClientOrder').value,
-            deliveryDate: document.getElementById('deliveryDate').value,
-            orderDate: document.getElementById('orderDate').value,
-            description: document.getElementById('descriptionOrder').value || '',
-            orderDetails: orderDetails,
-        }),*/
+        }
     })
         .then(response => response.json())
         .then(data => {
             if (!data.error) {
-                console.log(data);
                 const { message, title, responseData, status } = data;
                 if (status === true) {
                     vNotify.success({ text: message, title: title });
                 } else {
                     vNotify.error({ text: message, title: title });
                 }
-                console.log(responseData)
                 currentCitations = responseData;
                 if (responseData.length > 0) {
                     let table = document.getElementById('citationTable');
@@ -42,8 +37,9 @@ const getAllCitations = () => {
                             <td>${element.description}</td>
                             <td>${element.nameWorker} ${element.lastnameWorker}</td>
                             <td>${element.nameUser} ${element.lastnameUser}</td>
+                            <td><b>Fecha:</b> ${element.date} <b>Inicio:</b> ${element.startHour} <b>Fin:</b> ${element.endHour}</td>
                             <td>${i18(element.status)}</td>
-                            <td><button data-bs-toggle="modal" data-bs-target="#modalCitationsDetails" class="btn btn-outline-primary" onclick="showCitationDetails(${element.id})" title="Ver el detalle de la cita"><i class="bi bi-eye"></i>Ver  Detalle</button></td>
+                            <td><button data-bs-toggle="modal" data-bs-target="#modalCitationsDetails" class="btn btn-outline-primary" onclick="showCitationDetails(${element.id})" title="Ver el detalle de la cita"><i class="bi bi-eye"></i>Detalle</button></td>
                             <td><button data-bs-toggle="modal" data-bs-target="#modalCitationsDetailsEdit" class="btn btn-outline-primary" onclick="editCitationDetails(${element.id})" title="Editar cita"><i class="bi bi-pen"></i>Editar</button></td>
                             <td><button data-bs-toggle="modal" data-bs-target="#modalCitationsDetailsPay" class="btn btn-outline-primary" onclick="payCitationDetails(${element.id})" title="Editar cita"><i class="bi bi-cash-coin"></i>Cobrar</button></td>
                             `;
@@ -74,14 +70,12 @@ const showCitationDetails = (id) => {
         .then(response => response.json())
         .then(data => {
             if (!data.error) {
-                console.log(data);
                 const { message, title, responseData, status } = data;
                 if (status === true) {
                     vNotify.success({ text: message, title: title });
                 } else {
                     vNotify.error({ text: message, title: title });
                 }
-                console.log(responseData)
                 if (responseData) {
                     let table = document.getElementById('modalCitationsDetailsTable');
                     let tbody = table.getElementsByTagName('tbody')[0];
@@ -91,9 +85,10 @@ const showCitationDetails = (id) => {
                     detailsService.innerHTML = `
                     <div class="input-group-text"><b>Asignado a: </b> ${citation.nameWorker} ${citation.lastnameWorker}</div>
                     <div class="input-group-text"><b>Cliente: </b> ${citation.nameUser} ${citation.lastnameUser}</div>
-                    <div class="input-group-text"><b>Comentario: </b>${responseData.description}</div>
+                    <div class="input-group-text"><b>Comentario: </b>${responseData.observations}</div>
                     `;
-                    responseData.services.forEach(element => {
+                    console.log(responseData);
+                    responseData.forEach(element => {
                         let tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${element.id}</td>
@@ -101,6 +96,7 @@ const showCitationDetails = (id) => {
                             <td>${element.duration} Minutos</td>	
                             <td>$ ${element.cost}</td>	
                             <td>${element.description}</td>	
+                            <td>${element.observation}</td>	
                             `;
 
                         tbody.appendChild(tr);
@@ -119,21 +115,38 @@ function getCalendarStart(dayOfWeek, currentDate) {
     return Math.abs(startOffset);
 }
 
+const navigateCalendar = (direction) => {
+    if (direction === 'next' && citationControllerVar.currentMonth < 12) {
+        citationControllerVar.currentMonth++;
+        citationControllerVar.currentMonth == 12 ? 
+        citationControllerVar.currentMonth = 0 : citationControllerVar.currentMonth;
+    } else if (direction === 'previous' && citationControllerVar.currentMonth >= 0) {
+        citationControllerVar.currentMonth--;
+        citationControllerVar.currentMonth == -1 ?
+        citationControllerVar.currentMonth = 11 : citationControllerVar.currentMonth;
+    }
+    updateCalendar();
+}
 const updateCalendar = async () => {
 
     let currentDate = new Date();
+    currentDate = new Date(currentDate.getFullYear(), citationControllerVar.currentMonth, currentDate.getDate());
     let firstDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     let neutralDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     let day = firstDate.getUTCDay();
     let date = firstDate.getUTCDate();
     let dayOfWeek = getCalendarStart(day, date);
+
+    let labelMonth = document.getElementById('labelMonth');
+    labelMonth.textContent = dayjs(currentDate).locale('es').format('MMMM YYYY');
+
     let tableCalendar = document.querySelector('#calendarTable tbody');
     tableCalendar.innerHTML = '';
     let currenDay = 0;
     let startDate = await getDateFormat(firstDate.getFullYear(), firstDate.getMonth(), firstDate.getDate());
     let endDate = await getDateFormat(neutralDate.getFullYear(), neutralDate.getMonth(), neutralDate.getDate());
     let schedules = await getScheduleByRangeDates(startDate, endDate);
-    //console.log(schedules);
+    citationControllerVar.schedules = schedules;
     for (i = 0; i < 6; i++) {
         let tr = document.createElement('tr');
         for (j = 0; j < 7; j++) {
@@ -141,17 +154,22 @@ const updateCalendar = async () => {
             if ((i == 0 && j > dayOfWeek - 1) || (i > 0 && neutralDate.getDate() > currenDay)) {
                 currenDay++;
                 let dateByDay = await getDateFormat(currentDate.getFullYear(), currentDate.getMonth(), currenDay);
-                let rangeSchedules = schedules.find(item => item.date == dateByDay)?.rangeSchedules;
-                //console.log(rangeSchedules);
+                let dateByDay2 = await getDateFormat(currentDate.getFullYear(), currentDate.getMonth(), currenDay + 1);
+                let rangeSchedules = schedules.filter(item => item.date == dateByDay);
+                rangeSchedules = rangeSchedules.map(item => {
+                    return item.rangeSchedules[0];
+                });
+
                 let citation = {
                     dateByDay,
                     rangeSchedules
                 }
                 let dayTable = await buildTableDay(citation);
+                let isToday = currenDay == currentDate.getDate() && new Date().getMonth() == currentDate.getMonth() && new Date().getFullYear() == currentDate.getFullYear();
                 td.innerHTML = `
                 <div class="container ">
-                <div class="row justify-content-center ${currenDay < currentDate.getDate() ? 'none-click' : ''}">
-                <span class="fw-bold text-center ${currenDay == currentDate.getDate() ? 'badge bg-secondary' : ''}">${dateByDay} ${currenDay == currentDate.getDate() ? 'Hoy' : ''}</span>
+                <div class="row justify-content-center ${dayjs(dateByDay2).isBefore(new Date()) ? 'none-click' : ''}">
+                <span class="fw-bold text-center ${isToday ? 'badge bg-secondary' : ''}">${dateByDay} ${isToday ? 'Hoy' : ''}</span>
                 ${dayTable.outerHTML}       
                 </div>
                 </div>
@@ -307,6 +325,7 @@ const setStartHourCitation = async (hour, dateByDay) => {
     let citationHourInit = document.getElementById('citationHourInit');
     citationHourInit.value = hour;
     let services = await getServicesAvailables();
+    citationControllerVar.servicesAvailables = services;
     buildSelectServices(services);
 
 
@@ -340,54 +359,160 @@ const getServicesAvailables = () => {
 }
 
 const buildSelectServices = (services) => {
+
     let contentSelect = document.getElementById('selectServiceCitationContainer');
     contentSelect.innerHTML = '';
-    let selectServices = document.createElement('select');
-    selectServices.classList.add('form-select');
-    selectServices.id = "selectServiceCitation"
-    selectServices.addEventListener('change', (e) => {
-        clickOptionService(e, services);
-    });
+    let selectServices = document.createElement('div');
+    selectServices.id = "selectServiceCitation";
 
     if (services.length > 0) {
         services.map(item => {
             selectServices.innerHTML += `
-                        <option value="${item.id}">
+                        <div class="row mb-3">
+                        <div class="input-group">
+                        <label class="form-control">
                             ${item.name} | ${item.duration} Minutos | $ ${item.cost}
-                        </option>
+                        </label>
+                        <button class="btn btn-outline-primary btn-sm" onclick="clickOptionService(${item.id})"><i class="bi bi-plus"></i> Agregar</button>
+                        </div>
+                        </div>
                         `;
         });
         contentSelect.appendChild(selectServices);
     }
 }
 
-const clickOptionService = (event, services) => {
-    let idService = event.target.value;
-    let service = services.find(item => item.id == idService);
+let tempArrayServices = [];
+
+const clickOptionService = (idService) => {
+    let service = citationControllerVar.servicesAvailables.find(item => item.id == idService);
+    let existService = tempArrayServices.find(item => item.id == idService);
+
+
+
+
 
     let startHour = document.getElementById('citationHourInit').value;
-    let endHour = dayjs(startHour, 'HH:mm').add(service.duration, 'minute').format('HH:mm');
-    document.getElementById('citationHourEnd').value = endHour;
+    if (!existService) {
+        if (tempArrayServices.length > 0) {
+            let lastService = tempArrayServices[tempArrayServices.length - 1];
+            service.startHour = lastService.endHour;
+            service.endHour = dayjs(service.startHour, 'HH:mm').add(service.duration, 'minute').format('HH:mm');
+        } else {
+            service.startHour = startHour;
+            service.endHour = dayjs(startHour, 'HH:mm').add(service.duration, 'minute').format('HH:mm');
+        }
+        let isScheduleAvailable = checkScheduleAvailable(service);
+        if (!isScheduleAvailable) {
+            vNotify.error({ text: 'El servicio no esta disponible en el horario seleccionado', title: 'Citas Cruzadas' });
+            return;
+        } else {
+            tempArrayServices.push(service);
+        }
+    } else
+        return;
+
+    let finalDuration = 0;
+    let total = 0;
+    tempArrayServices.forEach(item => {
+        finalDuration += item.duration;
+        total += item.cost;
+    });
+    document.getElementById('citationHourEnd').value = dayjs(startHour, 'HH:mm').add(finalDuration, 'minute').format('HH:mm');
+    document.querySelector('#totalCost span').textContent = `$ ${total}`;
+    let servicesDetailsTableTbody = document.querySelector('#servicesDetailsTable tbody');
+    let tr = document.createElement('tr');
+    tr.id = `trService${service.id}`;
+
+    tr.innerHTML = `
+    <td class="text-center">${service.id}</td>
+    <td class="text-center">${service.name}</td>
+    <td class="text-center">${service.duration} Minutos</td>
+    <td class="text-center">$ ${service.cost}</td>
+    <td class="text-center">${service.startHour}</td>
+    <td class="text-center">${service.endHour}</td>
+    <td class="text-center"><input type="text" id="inputObservation${service.id}" class="form-control"/></td>
+    <td class="text-center"><button class="btn btn-outline-danger btn-sm" onclick="removeService(${service.id})"><i class="bi bi-trash"></i></button></td>
+    `;
+    servicesDetailsTableTbody.insertBefore(tr, document.getElementById('totalCost'));
 
 }
+const removeService = (id) => {
+    tempArrayServices = tempArrayServices.filter(item => item.id != id);
+    let startHour = document.getElementById('citationHourInit').value;
+    let finalDuration = 0;
+    let total = 0;
+    tempArrayServices = tempArrayServices.map((item, index) => {
+        if (index == 0) {
+            item.startHour = startHour;
+            item.endHour = dayjs(startHour, 'HH:mm').add(item.duration, 'minute').format('HH:mm');
 
+        } else {
+            let lastService = tempArrayServices[index - 1];
+            item.startHour = lastService.endHour;
+            item.endHour = dayjs(item.startHour, 'HH:mm').add(item.duration, 'minute').format('HH:mm');
+        }
+        let tr = document.getElementById(`trService${item.id}`);
+        tr.querySelectorAll('td')[4].textContent = item.startHour;
+        tr.querySelectorAll('td')[5].textContent = item.endHour;
+        finalDuration += item.duration;
+        total += item.cost;
+        return item;
+    });
+    document.getElementById('citationHourEnd').value = dayjs(startHour, 'HH:mm').add(finalDuration, 'minute').format('HH:mm');
+    document.querySelector('#totalCost span').textContent = `$ ${total}`;
+    let servicesDetailsTableTbody = document.querySelector('#servicesDetailsTable tbody');
+    let tr = servicesDetailsTableTbody.querySelector(`#trService${id}`);
+    servicesDetailsTableTbody.removeChild(tr);
+}
+const checkScheduleAvailable = (service) => {
+    let thisDate = document.getElementById('citationDate').value;
+    let schedules = citationControllerVar.schedules.filter(item => item.date == thisDate);
+
+    let isAvailable = true;
+    if (schedules && schedules.length > 0) {
+        for (schedule of schedules) {
+            for (range of schedule.rangeSchedules) {
+                let initialHour = dayjs(service.startHour, 'HH:mm');
+                let finalHour = dayjs(service.endHour, 'HH:mm');
+                //let questionHour = dayjs();
+                if (dayjs(range.startHour, 'HH:mm').isSame(initialHour) || dayjs(range.startHour, 'HH:mm').isBetween(initialHour, finalHour) || dayjs(range.endHour, 'HH:mm').isBetween(initialHour, finalHour)) {
+                    isAvailable = false;
+                    return false;
+                }
+            }
+        }
+    }
+    return isAvailable;
+}
 const saveCitation = () => {
+    let thisModalBtnClose = document.querySelector('#modalAddCitation button.btn-close');
 
     let citationDate = document.getElementById('citationDate')?.value;
     let startHour = document.getElementById('citationHourInit')?.value;
     let endHour = document.getElementById('citationHourEnd')?.value;
-    let idService = document.getElementById('selectServiceCitation')?.value;
     let idClient = document.getElementById('inputClient')?.getAttribute('data-id');
     let idAsigned = document.getElementById('inputAsigned')?.getAttribute('data-id');
-    let observationsCitation = document.getElementById('observationsCitation')?.value;
+    let observationsCitation = document.getElementById('observationsCitation')?.value || '';
 
-    let contains = citationDate && startHour && endHour && idService && idClient && idAsigned;
+    let contains = citationDate && startHour && endHour && idClient && idAsigned;
 
     if (!contains) {
         vNotify.error({ text: 'Hay Campos vacios que son necesarios', title: 'Campos Requeridos' });
+        thisModalBtnClose.click();
         return;
     }
-
+    if (tempArrayServices.length == 0) {
+        vNotify.error({ text: 'Debe agregar al menos un servicio', title: 'Campos Requeridos' });
+        thisModalBtnClose.click();
+        return;
+    }
+    tempArrayServices = tempArrayServices.map(item => {
+        return {
+            id: item.id,
+            description: document.getElementById(`inputObservation${item.id}`)?.value || ''
+        };
+    });
 
     fetch('./saveCitation', {
         method: 'POST',
@@ -402,13 +527,13 @@ const saveCitation = () => {
         body: JSON.stringify({
             idUser: Number(idClient),
             idWorker: Number(idAsigned),
-            idService: Number(idService),
             description: observationsCitation,
             dataShedule: {
-                startHour: startHour,
-                endHour: endHour,
+                startHour: dayjs(startHour, 'HH:mm').format('HH:mm:ss'),
+                endHour: dayjs(endHour, 'HH:mm').format('HH:mm:ss'),
                 date: citationDate
-            }
+            },
+            services: tempArrayServices
         }),
 
     })
@@ -423,7 +548,6 @@ const saveCitation = () => {
                     vNotify.error({ text: message, title: title });
                 }
                 updateCalendar();
-                let thisModalBtnClose = document.querySelector('#modalAddCitation button.btn-close');
                 thisModalBtnClose.click();
             }
         });

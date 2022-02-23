@@ -20,7 +20,17 @@ class CitationController extends Controller
         $citations = DB::table('citation')
             ->join('users as uw', 'citation.idWorker', '=', 'uw.id')
             ->join('users as uu', 'citation.idUser', '=', 'uu.id')
-            ->select('citation.*', 'uw.name as nameWorker', 'uw.lastName as lastnameWorker', 'uu.name as nameUser', 'uu.lastName as lastnameUser')
+            ->join('schedule as sh', 'citation.idSchedule', '=', 'sh.id')
+            ->join('rangeSchedule as rsh', 'sh.idRangeSchedule', '=', 'rsh.id')
+            ->select(
+                'citation.*',
+                'uw.name as nameWorker',
+                'uw.lastName as lastnameWorker',
+                'uu.name as nameUser',
+                'uu.lastName as lastnameUser',
+                'sh.date',
+                'rsh.startHour',
+                'rsh.endHour')
             ->get();
         if (isset($citations)) {
             $response['status'] = true;
@@ -41,15 +51,12 @@ class CitationController extends Controller
             'responseData' => [],
             'o' => Date('Y-m-d H:i:s'),
         ];
+
         $citationDetails = DB::table('citationDetail')
-            ->select('idService', 'description')
-            ->first();
-
-        $services = DB::table('service')
-            ->where('id', '=', $citationDetails->idService)
+            ->join('service', 'citationDetail.idService', '=', 'service.id')
+            ->select('service.*', 'citationDetail.description as observation')
+            ->where('citationDetail.idCitation', '=', $id)
             ->get();
-
-        $citationDetails->services = $services;
 
         if (isset($citationDetails)) {
             $response['status'] = true;
@@ -139,13 +146,25 @@ class CitationController extends Controller
             'message' => 'No se pudo guardar los datos',
             'responseData' => [],
         ];
+        $dataShedule = $request->dataShedule;
+
+        $idRangeShedule = DB::table('rangeSchedule')->insertGetId(
+            [
+                'startHour' => $dataShedule['startHour'],
+                'endHour' => $dataShedule['endHour'],
+                'status' => 'reserved',
+            ]
+        );
+       $idSchedule = DB::table('schedule')->insertGetId(
+            [
+                'date' => $dataShedule['date'],
+                'idRangeSchedule' => $idRangeShedule,
+            ]
+        );
         $description = $request->description;
         $idUser = $request->idUser;
         $idWorker = $request->idWorker;
-        $idService = $request->idService;
-        $idRangeSchedule = $request->idRangeSchedule;
-        $date = $request->date;
-        $hour = $request->hour;
+
         $idCitation = DB::table('citation')->insertGetId(
             [
                 'creationDate' => date("Y-m-d H:i:s"),
@@ -153,8 +172,20 @@ class CitationController extends Controller
                 'status' => 'active',
                 'idWorker' => $idWorker,
                 'idUser' => $idUser,
+                'idSchedule' => $idSchedule,
             ]
         );
+        $services = $request->services;
+        foreach ($services as $service) {
+            DB::table('citationDetail')->insert(
+                [
+                    'idCitation' => $idCitation,
+                    'idService' => $service['id'],
+                    'description' => $service['description'],
+                ]
+            );
+        }
+
         if (isset($idCitation)) {
             $response['status'] = true;
             $response['title'] = '¡Éxito!';
