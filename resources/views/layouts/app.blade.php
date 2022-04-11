@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,25 +16,34 @@
     <script src="{{ asset('js/controllers/i18.js') }}" defer></script>
     <script src="{{ asset('js/controllers/homeController.js') }}" defer></script>
     <script src="{{ asset('js/controllers/citationController.js') }}" defer></script>
-    
+    <script src="{{ asset('js/controllers/registerController.js') }}" defer></script>
+    <script src="{{ asset('js/controllers/serviceController.js') }}" defer></script>
+    <script src="{{ asset('js/controllers/payController.js') }}" defer></script>
+    <script src="{{ asset('js/controllers/boxController.js') }}" defer></script>
+    <script src="{{ asset('js/controllers/configController.js') }}" defer></script>
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <!--icono-->
-    <link rel="icon" href="./img/madu2.jpg">
+    <link rel="icon" href="./img/bellas2.png">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/controllers/home.css') }}" rel="stylesheet">
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand madu-bold" href="{{ url('/') }}">
-                    <img src="{{ url('img/madu3.png') }}" alt="Madu Estudio" width="30px"> {{ config('app.name', 'Laravel') }}
+                <a class="navbar-brand bellas-bold" href="{{ url('/') }}">
+                    <img src="{{ url('img/bellas2.png') }}" alt="Bellas Estudio" width="30px">
+                    {{ config('app.name', 'Laravel') }}
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -52,29 +62,29 @@
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                                 </li>
                             @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        class="d-none">
                                         @csrf
                                     </form>
                                 </div>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="btn btn-outline-primary"  type="button"
+                                href="{{ route('config') }}" onclick="getAllParameter()"><i class="bi bi-gear"></i></a>
                             </li>
                         @endguest
                     </ul>
@@ -87,4 +97,5 @@
         </main>
     </div>
 </body>
+
 </html>

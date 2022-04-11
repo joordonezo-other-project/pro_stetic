@@ -1,24 +1,123 @@
-.madu-bold {
-    color: #ec037c !important;
+.bellas-bold {
+    /*color: #ec037c !important;*/
+    color: #d33b77 !important;
     font-weight: 700;
 }
 
-.nav-link{
-    color: #ec037c !important;
+
+.nav-link {
+    color: #d33b77 !important;
 }
 
 .btn-primary {
-    background-color: #ec037c !important;
-    border-color: #ec037c !important;
+    background-color: #d33b77 !important;
+    border-color: #d33b77 !important;
 }
 
 .btn-outline-primary {
-    color: #ec037c !important;
-    border-color: #ec037c !important;
+    color: #d33b77 !important;
+    border-color: #d33b77 !important;
 }
 
 .btn-outline-primary:hover {
     color: #fff !important;
-    background-color: #ec037c !important;
-    border-color: #ec037c !important;
+    background-color: #d33b77 !important;
+    border-color: #d33b77 !important;
+}
+.size-of-calendar {
+    width: 100%;
+}
+.witoutBorder {
+    border: none !important;
+}
+div#thisDayContainer {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+#dayTable tbody > tr {
+    height: 0px !important;
+    font-size: 0.5rem;
+    padding: 0.5%;
+}
+#dayTable tbody > tr > td {
+    padding: 0.1%;
+}
+
+.none-click {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.opacity-05 {
+    opacity: 0.5;
+}
+
+.customPopover {
+    position: fixed;
+    z-index: 10;
+    top: 10%;
+    width: 80%;
+    left: 10%;
+    background-color: #cecece;
+    padding: 2%;
+    border-radius: 15px;
+    border: #000 solid 2px;
+}
+.popover-body {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 480px;
+}
+#listOfPeople,
+#editlistOfPeople,
+#editselectServiceCitation,
+#selectServiceCitationContainer{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 100px;
+    padding: 1%;
+}
+table#calendarTable > tbody > tr > td {
+    padding: 0.2rem 0.2rem;
+}
+.btnCalendarCircle {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 85%;
+}
+.btnCalendarCircleActive {
+    background-color: #eb057c !important;
+    color: #fff !important;
+}
+.btnShadow {
+    background-color: #9e3e70;
+    color: #fff !important;
+}
+.centerContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-active,
+.income{
+    background-color: #198754 !important;
+    color: #fff !important;
+}
+.status-canceled,
+.egress{
+    background-color: #dc3545 !important;
+    color: #fff !important;
+}
+.status-warning{
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+.status-payment{
+    background-color: #0d6efd !important;
+    color: #fff !important;
 }
