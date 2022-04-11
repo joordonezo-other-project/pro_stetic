@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -38,7 +40,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth');
     }
 
     /**
@@ -51,6 +53,10 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
+            'document' => ['required', 'string', 'max:255'],
+            'cellPhone' => ['required', 'string', 'max:255', 'unique:users'],
+            'role' => ['required', 'integer', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -64,10 +70,25 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $address = $data['address'];
+        if(!isset($address) && isset($data['textAddress'])){
+            $address = DB::table('address')->insertGetId(
+                ['description' => $data['textAddress'], 'status' => 'active']
+            );
+        }
+         User::create([
             'name' => $data['name'],
+            'lastName' => $data['lastName'],
+            'document' => $data['document'],
+            'cellPhone' => $data['cellPhone'],
+            'idAddress' => $address,
+            'lastName' => $data['lastName'],
+            'idRole' => $data['role'],
             'email' => $data['email'],
+            'status' => 'active',
+            'apiKey' => null,
             'password' => Hash::make($data['password']),
         ]);
+        return Auth::user();
     }
 }

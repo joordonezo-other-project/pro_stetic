@@ -137,6 +137,25 @@ class CitationController extends Controller
         }
         return response()->json($response);
     }
+    public function getServicesByCitationId(Request $request)
+    {
+        $response = [
+            'status' => false,
+            'title' => '¡Error!',
+            'message' => 'No se pudo obtener los datos',
+            'responseData' => [],
+        ];
+        $id = $request->id;
+        $services = DB::table('service')
+            ->get();
+        if (isset($services)) {
+            $response['status'] = true;
+            $response['title'] = '¡Éxito!';
+            $response['message'] = 'Datos obtenidos';
+            $response['responseData'] = $services;
+        }
+        return response()->json($response);
+    }
 
     public function saveCitation(Request $request)
     {
@@ -191,6 +210,46 @@ class CitationController extends Controller
             $response['title'] = '¡Éxito!';
             $response['message'] = 'Datos guardados';
             $response['responseData'] = $idCitation;
+        }
+        return response()->json($response);
+    }
+
+    public function cancelCitation(Request $request)
+    {
+        $response = [
+            'status' => false,
+            'title' => '¡Error!',
+            'message' => 'No se pudo guardar los datos',
+            'responseData' => [],
+        ];
+        $id = $request->id;
+        $citation = DB::table('citation')
+            ->where('id', '=', $id)
+            ->update(
+                [
+                    'status' => 'canceled',
+                ]
+            );
+            $citation = DB::table('citation')
+            ->where('id', '=', $id)
+            ->first();
+            
+            $schedule = DB::table('schedule')
+            ->where('id', '=', $citation->idSchedule)
+            ->first();
+
+            $rangeSchedule = DB::table('rangeSchedule')
+            ->where('id', '=', $schedule->idRangeSchedule)
+            ->update(
+                [
+                    'status' => 'available',
+                ]
+            );
+        if (isset($citation)) {
+            $response['status'] = true;
+            $response['title'] = '¡Éxito!';
+            $response['message'] = 'Datos guardados';
+            $response['responseData'] = $citation;
         }
         return response()->json($response);
     }

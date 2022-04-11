@@ -3,6 +3,10 @@ const words = {
     'inactive': 'Inactivo',
     'worker': 'Trabajador',
     'client': 'Cliente',
+    'canceled': 'Cancelado',
+    'payment': 'Pago',
+    'income': 'Ingreso',
+    'egress': 'Egreso',
 };
 
 const i18 = (word) => {

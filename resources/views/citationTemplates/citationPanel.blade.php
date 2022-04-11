@@ -2,7 +2,7 @@
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pills-citation-table-tab" data-bs-toggle="pill"
             data-bs-target="#pills-citation-table" type="button" role="tab" aria-controls="pills-citation-table"
-            aria-selected="true"><i class="bi bi-table"></i> Tabla</button>
+            aria-selected="true" onclick="getAllCitations()"><i class="bi bi-table"></i> Tabla</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="pills-citation-calendar-tab" data-bs-toggle="pill"
@@ -21,14 +21,14 @@
             <caption>Tabla de Citas</caption>
             <thead class="table-light">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Fecha creación</th>
-                    <th scope="col">Descripción</th>
-                    <th scope="col">Asignado a</th>
-                    <th scope="col">Cliente</th>
-                    <th scope="col">Fecha Cita</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Acciones</th>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Fecha creación</th>
+                    <th scope="col" class="text-center">Descripción</th>
+                    <th scope="col" class="text-center">Asignado a</th>
+                    <th scope="col" class="text-center">Cliente</th>
+                    <th scope="col" class="text-center">Fecha Cita</th>
+                    <th scope="col" class="text-center">Estado</th>
+                    <th scope="col" class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +37,11 @@
         </table>
 
         @include('citationTemplates.modals.modalCitationsDetails')
+
+        @include('citationTemplates.modals.modalEditCitation')
+
+        @include('citationTemplates.modals.modalPayCitation')
+
     </div>
     <div class="tab-pane fade show" id="pills-citation-calendar" role="tabpanel"
         aria-labelledby="pills-citation-calendar-tab">

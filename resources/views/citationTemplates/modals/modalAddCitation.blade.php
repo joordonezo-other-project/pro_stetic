@@ -8,23 +8,24 @@
             </div>
             <div class="modal-body">
                 <div class="row mb-3 justify-content-around">
+                    
                     <label for="citationDate"
-                        class="col-md-2 col-form-label text-md-end">{{ __('Fecha Cita') }}</label>
-                    <div class="col-md-2">
+                        class="col-md-auto col-form-label ">{{ __('Fecha Cita') }}</label>
+                    <div class="col-md-auto">
                         <div class="input-group">
                             <input id="citationDate" type="date" class="form-control" autofocus disabled required>
                         </div>
                     </div>
                     <label for="citationHourInit"
-                        class="col-md-2 col-form-label text-md-end">{{ __('Hora Inicial') }}</label>
-                    <div class="col-md-2">
+                        class="col-md-auto col-form-label ">{{ __('Hora Inicial') }}</label>
+                    <div class="col-md-auto">
                         <div class="input-group">
                             <input id="citationHourInit" type="time" class="form-control" autofocus disabled required>
                         </div>
                     </div>
                     <label for="citationHourEnd"
-                        class="col-md-2 col-form-label text-md-end">{{ __('Hora Final') }}</label>
-                    <div class="col-md-2">
+                        class="col-md-auto col-form-label ">{{ __('Hora Final') }}</label>
+                    <div class="col-md-auto">
                         <div class="input-group">
                             <input id="citationHourEnd" type="time" class="form-control" autofocus disabled required>
                         </div>
