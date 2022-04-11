@@ -352,9 +352,14 @@ const setPeopleCitationByRole = (fullName, idPerson, roleName, role, typeSearch)
         inputAsigned.value = fullName;
         inputAsigned.setAttribute('data-id', idPerson);
     } else if (roleName == 'client') {
-        let inputClient = document.getElementById('inputClient');
+        let inputClient = '';
+        if(typeSearch == 'edit'){
+            inputClient = document.getElementById('editinputClient');
+        }else{
+            inputClient = document.getElementById('inputClient');
+        }
         inputClient.value = fullName;
-        inputClient.setAttribute('data-id', role);
+        inputClient.setAttribute('data-id', idPerson);
     }
 
 }

@@ -133,7 +133,7 @@ class ServiceController extends Controller
         ->select('value')
         ->where('name', 'iva')->first();
         if (isset($parameterIva)) {
-            $iva = $parameterIva;
+            $iva = floatval($parameterIva->value);
         }
 
         $total = 0;
